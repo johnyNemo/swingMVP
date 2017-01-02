@@ -1,32 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.swingmvp;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Observable;
+import com.swingmvp.dc.ServiceContainerInterface;
+
 
 /**
  *
  * @author marek
  */
 public abstract class Presenter {
-
-    private HashMap<String, Observable> _presentationModels;
     
-    public Presenter(HashMap<String, Observable> presentationModels) {
-        _presentationModels = presentationModels;
+    private Application _application;
+    
+    public Presenter(Application application) {
+        _application = application;
     }
     
-    protected <T extends Observable> T getPresentationModel(String modelName) {
-        return (T) _presentationModels.get(modelName);
+    protected ServiceContainerInterface getContainer() {
+        return _application.getServiceContainer();
     }
     
-    public Collection<Observable> getPresentationModels() {
-        return _presentationModels.values();
+    protected void openWindow(String viewName) {
+        _application.openWindow(viewName);
     }
+    
+    abstract protected void setView(View v);
     
 }

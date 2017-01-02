@@ -5,12 +5,12 @@
  */
 package com.swingmvp;
 
+import com.swingmvp.dc.ServiceContainerInterface;
+
 /**
  *
  * @author marek
  */
-public class TestService {
-    public void test() {
-        System.out.println("Test");
-    }
+public interface ServiceFactoryMethod {
+    public Object create(ServiceContainerInterface serviceContainer);
 }

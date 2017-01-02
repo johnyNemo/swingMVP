@@ -5,21 +5,14 @@
  */
 package com.swingmvp;
 
-import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
-
 /**
  *
  * @author marek
  */
-public interface View extends Observer {
-    
-    public void observePresenterModel();
+public interface View {
+    public void setPresenter(Presenter presenter);
     
     public void show();
     
-    public void hide();
-    
-    public void displaySubView(View subView);
+    public void showModal();
 }

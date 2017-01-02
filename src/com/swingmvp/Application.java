@@ -1,7 +1,10 @@
 package com.swingmvp;
 
-import com.deploymanager.gui.MainView;
-import java.lang.reflect.InvocationTargetException;
+import com.swingmvp.config.Configuration;
+import com.swingmvp.config.ViewConfiguration;
+import com.swingmvp.config.XMLReader;
+import com.swingmvp.dc.ServiceContainer;
+import com.swingmvp.dc.ServiceContainerInterface;
 
 /**
  *
@@ -10,51 +13,54 @@ import java.lang.reflect.InvocationTargetException;
 public class Application {
 
     private ServiceContainerInterface _serviceContainer;
-    
-    private View _view;
 
-    public Application(ServiceContainerInterface serviceContainer) {
+    private Configuration _config;
+
+    public Application(Configuration config, ServiceContainerInterface serviceContainer) {
+        _config = config;
         _serviceContainer = serviceContainer;
     }
 
     public void openWindow(String viewName) {
+        ViewConfiguration vconf = _config.getViewConfiguration(viewName);
+
         java.awt.EventQueue.invokeLater(() -> {
-            WindowDispatcher dispatcher = getWindowDispatcher(viewName);
-            dispatcher.dispatch(_serviceContainer);
-        });
-    }
+            Presenter presenter = _serviceContainer.getService(vconf.getPresenter());
+            View view = _serviceContainer.getService(vconf.getName());
 
-    public View openWindowModal(String viewName) throws InterruptedException, InvocationTargetException {
-        
-        java.awt.EventQueue.invokeAndWait(() -> {
-            WindowDispatcher dispatcher = getWindowDispatcher(viewName);
-            dispatcher.dispatch(_serviceContainer);
-            _view = dispatcher.getDispatchedView();
+            presenter.setView(view);
+            view.setPresenter(presenter);
+
+            view.show();
         });
 
-        return _view;
-    }
-
-    private WindowDispatcher getWindowDispatcher(String viewName) {
-        String dispatcherName = "dispatcher_" + viewName + "_dispatcher";
-
-        WindowDispatcher dispatcher = _serviceContainer.getService(dispatcherName);
-        if (dispatcher == null) {
-            View view = _serviceContainer.getService(viewName);
-            dispatcher = new StandardWindowDispatcher(view);
-        }
-        
-        return dispatcher;
-    }
-
-    public void registerWindowDispatcher(String viewName, WindowDispatcher dispatcher) {
-        _serviceContainer.registerService("dispatcher_" + viewName + "_dispatcher", (ServiceContainerInterface serviceContainer) -> {
-            return dispatcher;
-        }, true);
     }
 
     public ServiceContainerInterface getServiceContainer() {
         return _serviceContainer;
+    }
+
+    public static Application init() {
+        ServiceContainer sc = initServiceContainer();
+        Configuration config = readConfig();
+
+        Application app = new Application(config, sc);
+
+        sc.registerService("smvp-application", (ServiceContainerInterface serviceContainer) -> {
+            return app;
+        }, true);
+
+        return app;
+    }
+
+    private static ServiceContainer initServiceContainer() {
+        return new ServiceContainer();
+    }
+
+    private static Configuration readConfig() {
+        XMLReader configReader = new XMLReader();
+        String fname = Application.class.getClassLoader().getResource("smvp.config.xml").getPath();
+        return configReader.read(fname);
     }
 
 }

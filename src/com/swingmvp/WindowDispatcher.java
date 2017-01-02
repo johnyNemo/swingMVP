@@ -5,6 +5,8 @@
  */
 package com.swingmvp;
 
+import com.swingmvp.dc.ServiceContainerInterface;
+
 /**
  *
  * @author marek

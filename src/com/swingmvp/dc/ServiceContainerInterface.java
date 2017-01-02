@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.swingmvp;
+package com.swingmvp.dc;
+
+import com.swingmvp.ServiceFactoryMethod;
 
 /**
  *
  * @author marek
  */
 public interface ServiceContainerInterface {
-    public void registerService(String serviceName, ServiceFactoryMethodInterface factoryMethod, boolean cacheInstance);
-    
+    public void registerService(String serviceName, ServiceFactoryMethod factoryMethod, boolean cacheInstance);
+    public void registerService(String serviceName, ServiceFactoryMethod factoryMethod);
     public <T> T getService(String serviceName);
 }

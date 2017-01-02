@@ -1,6 +1,7 @@
 
-package com.swingmvp;
+package com.swingmvp.dc;
 
+import com.swingmvp.ServiceFactoryMethod;
 import java.util.HashMap;
 
 /**
@@ -13,11 +14,11 @@ public class ServiceContainer implements ServiceContainerInterface {
 
         private final boolean _isCached;
 
-        private final ServiceFactoryMethodInterface _factory;
+        private final ServiceFactoryMethod _factory;
         
         private Object _cachedInstance;
 
-        public ServiceMetadata(ServiceFactoryMethodInterface factory, boolean isCached) {
+        public ServiceMetadata(ServiceFactoryMethod factory, boolean isCached) {
             _factory = factory;
             _isCached = isCached;
         }
@@ -49,9 +50,13 @@ public class ServiceContainer implements ServiceContainerInterface {
      * @param cacheInstance
      */
     @Override
-    public void registerService(String serviceName, ServiceFactoryMethodInterface factoryMethod, boolean cacheInstance) {
+    public void registerService(String serviceName, ServiceFactoryMethod factoryMethod, boolean cacheInstance) {
         ServiceMetadata meta = new ServiceMetadata(factoryMethod, cacheInstance);
         _services.put(serviceName, meta);
+    }
+    
+    public void registerService(String serviceName, ServiceFactoryMethod factoryMethod) {
+        registerService(serviceName, factoryMethod, false);
     }
 
     /**

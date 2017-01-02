@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.swingmvp;
+package com.swingmvp.config;
 
 /**
  *
  * @author marek
  */
-public interface ServiceFactoryMethodInterface {
-    public Object create(ServiceContainerInterface serviceContainer);
+public interface Reader {
+    public Configuration read(String fileName);
 }
